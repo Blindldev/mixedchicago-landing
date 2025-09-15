@@ -103,11 +103,42 @@
       </p>
 
       <div class="animate-fade-up">
+        <!-- Success Message (hidden initially) -->
+        <div id="successMessage" class="hidden text-center">
+          <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center animate-pulse-slow">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <h3 class="text-3xl font-bold mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            We're excited to have you create!
+          </h3>
+          <p class="text-slate-300 text-lg mb-8">
+            You'll be the first to know when we open our doors. Get ready for an amazing creative journey!
+          </p>
+          <button id="resetForm" class="text-indigo-400 hover:text-indigo-300 underline">
+            Join another email
+          </button>
+        </div>
+
+        <!-- Email Form -->
         <form id="signup" class="grid grid-cols-1 gap-4 max-w-md mx-auto">
           <label class="sr-only" for="email">Email</label>
           <input id="email" name="email" type="email" required placeholder="you@domain.com"
                  class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
           <input type="text" id="hp" name="hp" class="hidden" tabindex="-1" autocomplete="off" />
+          
+          <!-- Legal Checkbox -->
+          <div class="flex items-start gap-3 text-sm text-slate-400">
+            <input type="checkbox" id="consent" name="consent" required
+                   class="mt-1 w-4 h-4 text-indigo-600 bg-slate-900 border-white/20 rounded focus:ring-indigo-500 focus:ring-2">
+            <label for="consent" class="leading-relaxed">
+              By entering your email, you give us permission to contact you about creative opportunities at our space. 
+              <span class="text-indigo-400">Opt out any time.</span> 
+              <a href="#" class="text-indigo-400 hover:text-indigo-300 underline">Privacy Policy</a>
+            </label>
+          </div>
+          
           <button id="submitBtn" type="submit"
                   class="rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
             Join the Waitlist
@@ -128,16 +159,34 @@
     const form = document.getElementById('signup');
     const msg = document.getElementById('msg');
     const btn = document.getElementById('submitBtn');
+    const successMessage = document.getElementById('successMessage');
+    const resetBtn = document.getElementById('resetForm');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       msg.textContent = '';
       const email = document.getElementById('email').value.trim();
       const hp = document.getElementById('hp').value.trim(); // honeypot
+      const consent = document.getElementById('consent').checked;
 
       const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
-      if (!valid) { msg.textContent = 'Please enter a valid email.'; return; }
-      if (hp) { msg.textContent = 'Thanks!'; form.reset(); return; } // bot
+      if (!valid) { 
+        msg.textContent = 'Please enter a valid email address.'; 
+        msg.classList.add('text-red-400');
+        return; 
+      }
+      
+      if (!consent) {
+        msg.textContent = 'Please check the consent box to continue.';
+        msg.classList.add('text-red-400');
+        return;
+      }
+      
+      if (hp) { 
+        // Bot detected - show success but don't submit
+        showSuccessMessage();
+        return; 
+      }
 
       btn.disabled = true; 
       btn.textContent = 'Joining...';
@@ -147,25 +196,40 @@
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, hp })
+          body: JSON.stringify({ email, hp, consent })
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok) {
-          msg.textContent = '🎉 Welcome to the community! You're on the list.';
-          msg.classList.add('text-green-400');
-          form.reset();
+          showSuccessMessage();
         } else {
-          msg.textContent = data.error || 'Something went wrong. Try again.';
+          msg.textContent = data.error || 'Something went wrong. Please try again.';
           msg.classList.add('text-red-400');
         }
       } catch (err) {
-        msg.textContent = 'Network error. Please try again.';
+        msg.textContent = 'Network error. Please check your connection and try again.';
         msg.classList.add('text-red-400');
       } finally {
         btn.disabled = false; 
         btn.textContent = 'Join the Waitlist';
         btn.classList.remove('opacity-75');
       }
+    });
+
+    // Show success message and hide form
+    function showSuccessMessage() {
+      form.classList.add('hidden');
+      successMessage.classList.remove('hidden');
+      successMessage.classList.add('animate-fade-up');
+    }
+
+    // Reset form when "Join another email" is clicked
+    resetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      form.classList.remove('hidden');
+      successMessage.classList.add('hidden');
+      form.reset();
+      msg.textContent = '';
+      msg.classList.remove('text-red-400', 'text-green-400');
     });
 
   </script>
