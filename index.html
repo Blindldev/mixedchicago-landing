@@ -144,7 +144,7 @@
             </form>
           </div>
 
-          <!-- Step 2: Email -->
+          <!-- Step 2: Email + Checkbox + Join -->
           <div id="step2" class="hidden animate-fade-up">
             <div class="text-center mb-6">
               <h3 class="text-2xl font-bold text-slate-200 mb-2">Great to meet you, <span id="userName" class="text-indigo-300"></span>!</h3>
@@ -153,33 +153,6 @@
             <form id="emailForm" class="grid grid-cols-1 gap-4">
               <input id="email" name="email" type="email" required placeholder="you@domain.com"
                      class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
-              <div class="flex gap-3">
-                <button id="backBtn" type="button"
-                        class="flex-1 rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 font-semibold text-slate-300 hover:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
-                  Back
-                </button>
-                <button id="emailNextBtn" type="submit"
-                        class="flex-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
-                  Continue
-                </button>
-              </div>
-              <p id="emailMsg" class="text-sm text-slate-300"></p>
-            </form>
-          </div>
-
-          <!-- Step 3: Final Confirmation -->
-          <div id="step3" class="hidden animate-fade-up">
-            <div class="text-center mb-6">
-              <h3 class="text-2xl font-bold text-slate-200 mb-2">Almost there, <span id="userNameFinal" class="text-indigo-300"></span>!</h3>
-              <p class="text-slate-400">Just confirm your email and agree to our terms</p>
-            </div>
-            <form id="finalForm" class="grid grid-cols-1 gap-4">
-              <div class="bg-slate-900/30 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-                <p class="text-slate-300 text-sm mb-1">Name:</p>
-                <p id="displayName" class="text-slate-100 font-medium"></p>
-                <p class="text-slate-300 text-sm mb-1 mt-3">Email:</p>
-                <p id="displayEmail" class="text-slate-100 font-medium"></p>
-              </div>
               
               <!-- Legal Checkbox -->
               <div class="flex items-start gap-3 text-sm text-slate-400">
@@ -192,7 +165,7 @@
               </div>
               
               <div class="flex gap-3">
-                <button id="backToEmailBtn" type="button"
+                <button id="backBtn" type="button"
                         class="flex-1 rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 font-semibold text-slate-300 hover:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
                   Back
                 </button>
@@ -201,7 +174,7 @@
                   Join the Waitlist
                 </button>
               </div>
-              <p id="finalMsg" class="text-sm text-slate-300"></p>
+              <p id="emailMsg" class="text-sm text-slate-300"></p>
             </form>
           </div>
         </div>
@@ -251,12 +224,19 @@
       document.getElementById('step2').classList.add('animate-fade-up');
     });
 
-    // Step 2: Email form
-    document.getElementById('emailForm').addEventListener('submit', (e) => {
+    // Step 2: Email + Checkbox + Submit
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
+      const consent = document.getElementById('consent').checked;
       const emailMsg = document.getElementById('emailMsg');
+      const submitBtn = document.getElementById('submitBtn');
       
+      // Clear previous messages
+      emailMsg.textContent = '';
+      emailMsg.classList.remove('text-red-400');
+      
+      // Validate email
       const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       if (!valid) {
         emailMsg.textContent = 'Please enter a valid email address.';
@@ -264,28 +244,15 @@
         return;
       }
       
-      formData.email = email;
-      document.getElementById('displayEmail').textContent = email;
-      
-      // Hide step 2, show step 3
-      document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step3').classList.remove('hidden');
-      document.getElementById('step3').classList.add('animate-fade-up');
-    });
-
-    // Step 3: Final form submission
-    document.getElementById('finalForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const consent = document.getElementById('consent').checked;
-      const finalMsg = document.getElementById('finalMsg');
-      const submitBtn = document.getElementById('submitBtn');
-      
+      // Validate consent
       if (!consent) {
-        finalMsg.textContent = 'Please check the consent box to continue.';
-        finalMsg.classList.add('text-red-400');
+        emailMsg.textContent = 'Please check the consent box to continue.';
+        emailMsg.classList.add('text-red-400');
         return;
       }
       
+      // Update form data
+      formData.email = email;
       formData.consent = consent;
       const hp = document.getElementById('hp').value.trim();
       
@@ -317,12 +284,12 @@
         if (res.ok && data.ok) {
           showSuccessMessage();
         } else {
-          finalMsg.textContent = data.error || 'Something went wrong. Please try again.';
-          finalMsg.classList.add('text-red-400');
+          emailMsg.textContent = data.error || 'Something went wrong. Please try again.';
+          emailMsg.classList.add('text-red-400');
         }
       } catch (err) {
-        finalMsg.textContent = 'Network error. Please check your connection and try again.';
-        finalMsg.classList.add('text-red-400');
+        emailMsg.textContent = 'Network error. Please check your connection and try again.';
+        emailMsg.classList.add('text-red-400');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Join the Waitlist';
@@ -330,17 +297,11 @@
       }
     });
 
-    // Back button handlers
+    // Back button handler
     document.getElementById('backBtn').addEventListener('click', () => {
       document.getElementById('step2').classList.add('hidden');
       document.getElementById('step1').classList.remove('hidden');
       document.getElementById('step1').classList.add('animate-fade-up');
-    });
-
-    document.getElementById('backToEmailBtn').addEventListener('click', () => {
-      document.getElementById('step3').classList.add('hidden');
-      document.getElementById('step2').classList.remove('hidden');
-      document.getElementById('step2').classList.add('animate-fade-up');
     });
 
     // Show success message and hide form
@@ -359,7 +320,6 @@
       // Reset to step 1
       document.getElementById('step1').classList.remove('hidden');
       document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step3').classList.add('hidden');
       
       // Clear form data
       formData = { name: '', email: '', consent: false };
