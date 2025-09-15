@@ -204,8 +204,11 @@
     // Step 1: Name form
     document.getElementById('nameForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      console.log('Name form submitted');
       const name = document.getElementById('name').value.trim();
       const nameMsg = document.getElementById('nameMsg');
+      
+      console.log('Name entered:', name);
       
       if (!name) {
         nameMsg.textContent = 'Please enter your name.';
@@ -215,13 +218,13 @@
       
       formData.name = name;
       document.getElementById('userName').textContent = name;
-      document.getElementById('userNameFinal').textContent = name;
-      document.getElementById('displayName').textContent = name;
       
+      console.log('About to show step 2');
       // Hide step 1, show step 2
       document.getElementById('step1').classList.add('hidden');
       document.getElementById('step2').classList.remove('hidden');
       document.getElementById('step2').classList.add('animate-fade-up');
+      console.log('Step 2 should now be visible');
     });
 
     // Step 2: Email + Checkbox + Submit
