@@ -135,7 +135,7 @@
             <label for="consent" class="leading-relaxed">
               By entering your email, you give us permission to contact you about creative opportunities at our space. 
               <span class="text-indigo-400">Opt out any time.</span> 
-              <a href="#" class="text-indigo-400 hover:text-indigo-300 underline">Privacy Policy</a>
+              <a href="privacy.html" class="text-indigo-400 hover:text-indigo-300 underline">Privacy Policy</a>
             </label>
           </div>
           
@@ -193,6 +193,14 @@
       btn.classList.add('opacity-75');
       
       try {
+        // Check if ENDPOINT is still the placeholder
+        if (ENDPOINT.includes('<your-worker-subdomain>')) {
+          // For testing - show success message without backend
+          console.log('Email submitted:', { email, consent });
+          showSuccessMessage();
+          return;
+        }
+
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
