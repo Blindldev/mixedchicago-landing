@@ -294,20 +294,21 @@
       submitBtn.classList.add('opacity-75');
       
       try {
-        // Check if ENDPOINT is still the placeholder
-        if (ENDPOINT.includes('<your-worker-subdomain>')) {
-          // For testing - show success message without backend
-          console.log('Form submitted:', formData);
-          showSuccessMessage();
-          return;
-        }
-
+        console.log('Attempting to submit to:', ENDPOINT);
+        console.log('Form data:', formData);
+        
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...formData, hp })
         });
+        
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
+        
         const data = await res.json().catch(() => ({}));
+        console.log('Response data:', data);
+        
         if (res.ok && data.ok) {
           showSuccessMessage();
         } else {
@@ -315,6 +316,7 @@
           emailMsg.classList.add('text-red-400');
         }
       } catch (err) {
+        console.error('Network error details:', err);
         emailMsg.textContent = 'Network error. Please check your connection and try again.';
         emailMsg.classList.add('text-red-400');
       } finally {
