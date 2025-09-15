@@ -1,8 +1,8 @@
 # Mixed Chicago Landing Page
 
-GitHub Pages: this repo auto-deploys on push to main. Keep CNAME = MixedChicago.com.
+GitHub Pages: this repo auto-deploys on push to main. Keep CNAME = mixedchicago.com.
 
-Custom domain: In repo → Settings → Pages → Custom domain = MixedChicago.com. Set DNS CNAME on your registrar to point to <your-gh-username>.github.io.
+Custom domain: In repo → Settings → Pages → Custom domain = mixedchicago.com. Set DNS CNAME on your registrar to point to blindldev.github.io.
 
 ## Cloudflare Worker (Free Plan):
 
@@ -15,19 +15,19 @@ Custom domain: In repo → Settings → Pages → Custom domain = MixedChicago.c
 
 Optional security: enable Bot Fight Mode; add Turnstile later if needed.
 
-CORS: In worker.js, replace <your-gh-username> with your actual GitHub username so https://<your-gh-username>.github.io is allowed.
+CORS: In worker.js, the domain mixedchicago.com is already configured for CORS.
 
 ## Smoke test:
 
-1. Open https://MixedChicago.com. Submit a test email.
+1. Open https://mixedchicago.com. Submit a test email.
 2. In Cloudflare → KV → MM_SUBSCRIBERS → confirm the key exists.
 3. Export emails: In Cloudflare KV, click List → Download JSON. You can import to Sheets or your CRM.
 
 ## What you (the human) need to replace, just once
 
 1. In index.html: set ENDPOINT to the Worker URL (e.g., https://mixedmediums-subscribe.<subdomain>.workers.dev).
-2. In worker.js: replace <your-gh-username> with your actual GitHub username so the preview/domain is allowed by CORS.
-3. In GitHub Pages settings: set Custom domain to MixedChicago.com, and point your DNS CNAME to <your-gh-username>.github.io.
+2. In worker.js: CORS is already configured for mixedchicago.com.
+3. In GitHub Pages settings: set Custom domain to mixedchicago.com, and point your DNS CNAME to blindldev.github.io.
 
 ## Notes on the free limits
 

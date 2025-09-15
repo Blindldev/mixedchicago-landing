@@ -2,11 +2,12 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const allowed = new Set([
-      'https://MixedChicago.com',
-      'https://<your-gh-username>.github.io'
+      'https://mixedchicago.com',
+      'https://www.mixedchicago.com',
+      'https://blindldev.github.io'
     ]);
     const headers = {
-      'Access-Control-Allow-Origin': allowed.has(origin) ? origin : 'https://MixedChicago.com',
+      'Access-Control-Allow-Origin': allowed.has(origin) ? origin : 'https://mixedchicago.com',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Content-Type': 'application/json',
