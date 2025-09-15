@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mixed Mediums — Coming Soon</title>
+  <meta name="description" content="Memberships, crafty workshops, engaging talks & community at 2130 W Chicago Ave. Join the list for launch updates." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta property="og:title" content="Mixed Mediums — Coming Soon" />
+  <meta property="og:description" content="Memberships • crafty workshops • engaging talks • community" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://MixedChicago.com/" />
+</head>
+<body class="bg-slate-950 text-slate-100 font-[Inter]">
+  <main class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-3xl w-full text-center">
+      <div class="inline-flex items-center gap-3 mb-6">
+        <span class="text-2xl font-extrabold tracking-tight">Mixed Mediums</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">A new creative space is coming to Chicago.</h1>
+      <p class="mt-4 text-slate-300">
+        <span class="font-semibold">Memberships</span> • crafty workshops • engaging talks • community swaps • pottery & tufting • screen printing • bouquet making
+      </p>
+
+      <form id="signup" class="mt-8 grid grid-cols-1 gap-3 max-w-xl mx-auto">
+        <label class="sr-only" for="email">Email</label>
+        <input id="email" name="email" type="email" required placeholder="you@domain.com"
+               class="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <!-- Honeypot (anti-bot) -->
+        <input type="text" id="hp" name="hp" class="hidden" tabindex="-1" autocomplete="off" />
+        <button id="submitBtn" type="submit"
+                class="rounded-xl bg-indigo-500 px-5 py-3 font-semibold hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          Notify me
+        </button>
+        <p id="msg" class="text-sm text-slate-300"></p>
+      </form>
+
+      <p class="mt-6 text-xs text-slate-500">By joining, you consent to receive updates from Mixed Mediums. We respect your privacy.</p>
+      <p class="mt-2 text-sm text-slate-400">© Mixed Mediums · 2130 W Chicago Ave · MixedChicago.com</p>
+    </div>
+  </main>
+
+  <script>
+    // Replace with your deployed Cloudflare Worker URL:
+    const ENDPOINT = 'https://<your-worker-subdomain>.workers.dev';
+
+    const form = document.getElementById('signup');
+    const msg  = document.getElementById('msg');
+    const btn  = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+      const email = document.getElementById('email').value.trim();
+      const hp = document.getElementById('hp').value.trim(); // honeypot
+
+      const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+      if (!valid) { msg.textContent = 'Please enter a valid email.'; return; }
+      if (hp) { msg.textContent = 'Thanks!'; form.reset(); return; } // bot
+
+      btn.disabled = true; btn.textContent = 'Submitting...';
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, hp })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          msg.textContent = 'Thanks! You're on the list.';
+          form.reset();
+        } else {
+          msg.textContent = data.error || 'Something went wrong. Try again.';
+        }
+      } catch (err) {
+        msg.textContent = 'Network error. Please try again.';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Notify me';
+      }
+    });
+  </script>
+</body>
+</html>
