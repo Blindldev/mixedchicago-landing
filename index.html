@@ -122,37 +122,88 @@
           </button>
         </div>
 
-        <!-- Email Form -->
-        <form id="signup" class="grid grid-cols-1 gap-4 max-w-md mx-auto">
-          <div>
-            <label for="name" class="block text-sm font-medium text-slate-300 mb-2">Name</label>
-            <input id="name" name="name" type="text" required placeholder="Your name"
-                   class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
+        <!-- Multi-step Form -->
+        <div id="formContainer" class="max-w-md mx-auto">
+          <!-- Step 1: Name -->
+          <div id="step1" class="animate-fade-up">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-200 mb-2">What's your name?</h3>
+              <p class="text-slate-400">We'd love to know who's joining our creative community</p>
+            </div>
+            <form id="nameForm" class="grid grid-cols-1 gap-4">
+              <input id="name" name="name" type="text" required placeholder="Your name"
+                     class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
+              <button id="nextBtn" type="submit"
+                      class="rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
+                Continue
+              </button>
+              <p id="nameMsg" class="text-sm text-slate-300"></p>
+            </form>
           </div>
-          
-          <div>
-            <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email</label>
-            <input id="email" name="email" type="email" required placeholder="you@domain.com"
-                   class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
+
+          <!-- Step 2: Email -->
+          <div id="step2" class="hidden animate-fade-up">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-200 mb-2">Great to meet you, <span id="userName" class="text-indigo-300"></span>!</h3>
+              <p class="text-slate-400">What's your email address?</p>
+            </div>
+            <form id="emailForm" class="grid grid-cols-1 gap-4">
+              <input id="email" name="email" type="email" required placeholder="you@domain.com"
+                     class="w-full rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg" />
+              <div class="flex gap-3">
+                <button id="backBtn" type="button"
+                        class="flex-1 rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 font-semibold text-slate-300 hover:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                  Back
+                </button>
+                <button id="emailNextBtn" type="submit"
+                        class="flex-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
+                  Continue
+                </button>
+              </div>
+              <p id="emailMsg" class="text-sm text-slate-300"></p>
+            </form>
           </div>
-          <input type="text" id="hp" name="hp" class="hidden" tabindex="-1" autocomplete="off" />
-          
-          <!-- Legal Checkbox -->
-          <div class="flex items-start gap-3 text-sm text-slate-400 mb-4">
-            <input type="checkbox" id="consent" name="consent" required
-                   class="mt-1 w-4 h-4 text-indigo-600 bg-slate-900 border-white/20 rounded focus:ring-indigo-500 focus:ring-2">
-            <label for="consent" class="leading-relaxed">
-              By entering your email, you give us permission to contact you about creative opportunities at our space. 
-              <a href="privacy.html" class="text-indigo-400 hover:text-indigo-300 underline">Privacy Policy</a>
-            </label>
+
+          <!-- Step 3: Final Confirmation -->
+          <div id="step3" class="hidden animate-fade-up">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-200 mb-2">Almost there, <span id="userNameFinal" class="text-indigo-300"></span>!</h3>
+              <p class="text-slate-400">Just confirm your email and agree to our terms</p>
+            </div>
+            <form id="finalForm" class="grid grid-cols-1 gap-4">
+              <div class="bg-slate-900/30 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                <p class="text-slate-300 text-sm mb-1">Name:</p>
+                <p id="displayName" class="text-slate-100 font-medium"></p>
+                <p class="text-slate-300 text-sm mb-1 mt-3">Email:</p>
+                <p id="displayEmail" class="text-slate-100 font-medium"></p>
+              </div>
+              
+              <!-- Legal Checkbox -->
+              <div class="flex items-start gap-3 text-sm text-slate-400">
+                <input type="checkbox" id="consent" name="consent" required
+                       class="mt-1 w-4 h-4 text-indigo-600 bg-slate-900 border-white/20 rounded focus:ring-indigo-500 focus:ring-2">
+                <label for="consent" class="leading-relaxed">
+                  By joining, you give us permission to contact you about creative opportunities at our space. 
+                  <a href="privacy.html" class="text-indigo-400 hover:text-indigo-300 underline">Privacy Policy</a>
+                </label>
+              </div>
+              
+              <div class="flex gap-3">
+                <button id="backToEmailBtn" type="button"
+                        class="flex-1 rounded-2xl border border-white/20 bg-slate-900/50 backdrop-blur-sm px-6 py-4 font-semibold text-slate-300 hover:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                  Back
+                </button>
+                <button id="submitBtn" type="submit"
+                        class="flex-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
+                  Join the Waitlist
+                </button>
+              </div>
+              <p id="finalMsg" class="text-sm text-slate-300"></p>
+            </form>
           </div>
-          
-          <button id="submitBtn" type="submit"
-                  class="rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 font-semibold hover:from-indigo-400 hover:to-purple-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 text-lg">
-            Join the Waitlist
-          </button>
-          <p id="msg" class="text-sm text-slate-300"></p>
-        </form>
+        </div>
+        
+        <input type="text" id="hp" name="hp" class="hidden" tabindex="-1" autocomplete="off" />
       </div>
     </div>
   </section>
@@ -163,86 +214,135 @@
     const ENDPOINT = 'https://<your-worker-subdomain>.workers.dev';
 
 
-    // Form handling
-    const form = document.getElementById('signup');
-    const msg = document.getElementById('msg');
-    const btn = document.getElementById('submitBtn');
+    // Multi-step form handling
+    let formData = {
+      name: '',
+      email: '',
+      consent: false
+    };
+
     const successMessage = document.getElementById('successMessage');
     const resetBtn = document.getElementById('resetForm');
+    const formContainer = document.getElementById('formContainer');
 
-    form.addEventListener('submit', async (e) => {
+    // Step 1: Name form
+    document.getElementById('nameForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      msg.textContent = '';
-      msg.classList.remove('text-red-400', 'text-green-400');
       const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const hp = document.getElementById('hp').value.trim(); // honeypot
-      const consent = document.getElementById('consent').checked;
-
+      const nameMsg = document.getElementById('nameMsg');
+      
       if (!name) {
-        msg.textContent = 'Please enter your name.';
-        msg.classList.add('text-red-400');
+        nameMsg.textContent = 'Please enter your name.';
+        nameMsg.classList.add('text-red-400');
         return;
       }
+      
+      formData.name = name;
+      document.getElementById('userName').textContent = name;
+      document.getElementById('userNameFinal').textContent = name;
+      document.getElementById('displayName').textContent = name;
+      
+      // Hide step 1, show step 2
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      document.getElementById('step2').classList.add('animate-fade-up');
+    });
 
+    // Step 2: Email form
+    document.getElementById('emailForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const emailMsg = document.getElementById('emailMsg');
+      
       const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      console.log('Form validation:', { name, email, valid });
-      if (!valid) { 
-        msg.textContent = 'Please enter a valid email address.'; 
-        msg.classList.add('text-red-400');
-        return; 
+      if (!valid) {
+        emailMsg.textContent = 'Please enter a valid email address.';
+        emailMsg.classList.add('text-red-400');
+        return;
       }
+      
+      formData.email = email;
+      document.getElementById('displayEmail').textContent = email;
+      
+      // Hide step 2, show step 3
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.remove('hidden');
+      document.getElementById('step3').classList.add('animate-fade-up');
+    });
+
+    // Step 3: Final form submission
+    document.getElementById('finalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const consent = document.getElementById('consent').checked;
+      const finalMsg = document.getElementById('finalMsg');
+      const submitBtn = document.getElementById('submitBtn');
       
       if (!consent) {
-        msg.textContent = 'Please check the consent box to continue.';
-        msg.classList.add('text-red-400');
+        finalMsg.textContent = 'Please check the consent box to continue.';
+        finalMsg.classList.add('text-red-400');
         return;
       }
       
-      if (hp) { 
+      formData.consent = consent;
+      const hp = document.getElementById('hp').value.trim();
+      
+      if (hp) {
         // Bot detected - show success but don't submit
         showSuccessMessage();
-        return; 
+        return;
       }
 
-      btn.disabled = true; 
-      btn.textContent = 'Joining...';
-      btn.classList.add('opacity-75');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Joining...';
+      submitBtn.classList.add('opacity-75');
       
       try {
         // Check if ENDPOINT is still the placeholder
         if (ENDPOINT.includes('<your-worker-subdomain>')) {
-        // For testing - show success message without backend
-        console.log('Form submitted:', { name, email, consent });
-        showSuccessMessage();
-        return;
+          // For testing - show success message without backend
+          console.log('Form submitted:', formData);
+          showSuccessMessage();
+          return;
         }
 
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, hp, consent })
+          body: JSON.stringify({ ...formData, hp })
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok) {
           showSuccessMessage();
         } else {
-          msg.textContent = data.error || 'Something went wrong. Please try again.';
-          msg.classList.add('text-red-400');
+          finalMsg.textContent = data.error || 'Something went wrong. Please try again.';
+          finalMsg.classList.add('text-red-400');
         }
       } catch (err) {
-        msg.textContent = 'Network error. Please check your connection and try again.';
-        msg.classList.add('text-red-400');
+        finalMsg.textContent = 'Network error. Please check your connection and try again.';
+        finalMsg.classList.add('text-red-400');
       } finally {
-        btn.disabled = false; 
-        btn.textContent = 'Join the Waitlist';
-        btn.classList.remove('opacity-75');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join the Waitlist';
+        submitBtn.classList.remove('opacity-75');
       }
+    });
+
+    // Back button handlers
+    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('step1').classList.add('animate-fade-up');
+    });
+
+    document.getElementById('backToEmailBtn').addEventListener('click', () => {
+      document.getElementById('step3').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      document.getElementById('step2').classList.add('animate-fade-up');
     });
 
     // Show success message and hide form
     function showSuccessMessage() {
-      form.classList.add('hidden');
+      formContainer.classList.add('hidden');
       successMessage.classList.remove('hidden');
       successMessage.classList.add('animate-fade-up');
     }
@@ -250,11 +350,25 @@
     // Reset form when "Join another email" is clicked
     resetBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      form.classList.remove('hidden');
+      formContainer.classList.remove('hidden');
       successMessage.classList.add('hidden');
-      form.reset();
-      msg.textContent = '';
-      msg.classList.remove('text-red-400', 'text-green-400');
+      
+      // Reset to step 1
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.add('hidden');
+      
+      // Clear form data
+      formData = { name: '', email: '', consent: false };
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('consent').checked = false;
+      
+      // Clear messages
+      document.querySelectorAll('[id$="Msg"]').forEach(msg => {
+        msg.textContent = '';
+        msg.classList.remove('text-red-400', 'text-green-400');
+      });
     });
 
   </script>
