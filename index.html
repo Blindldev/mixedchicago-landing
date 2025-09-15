@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/intersection-observer@0.12.2/intersection-observer.js"></script>
   <meta property="og:title" content="Mixed Mediums — Coming Soon" />
   <meta property="og:description" content="Memberships • crafty workshops • engaging talks • community" />
   <meta property="og:type" content="website" />
@@ -44,8 +43,21 @@
     .animate-fade-up { animation: fadeInUp 0.8s ease-out; }
     .animate-rotate { animation: rotate 20s linear infinite; }
     .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
-    .scroll-reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; }
-    .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+    .scroll-reveal { 
+      opacity: 0; 
+      transform: translateY(50px); 
+      transition: all 0.8s ease-out; 
+    }
+    .scroll-reveal.revealed { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+    .scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
+    .scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
+    .scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
+    .scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
+    .scroll-reveal:nth-child(5) { transition-delay: 0.5s; }
+    .scroll-reveal:nth-child(6) { transition-delay: 0.6s; }
     .parallax { transform: translateY(var(--scroll-offset, 0)); }
   </style>
 </head>
@@ -272,24 +284,29 @@
     // Replace with your deployed Cloudflare Worker URL:
     const ENDPOINT = 'https://<your-worker-subdomain>.workers.dev';
 
-    // Scroll reveal animation
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
+    // Scroll reveal animation - using scroll event for better compatibility
+    function checkScrollReveal() {
+      const elements = document.querySelectorAll('.scroll-reveal:not(.revealed)');
+      console.log('Checking scroll reveal for', elements.length, 'elements');
+      
+      elements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Element is visible when it's 100px from the bottom of the viewport
+        if (rect.top < windowHeight - 100) {
+          console.log('Revealing element', index, el);
+          el.classList.add('revealed');
         }
       });
-    }, observerOptions);
+    }
 
-    // Observe all scroll-reveal elements
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-      observer.observe(el);
-    });
+    // Check on scroll and on load
+    window.addEventListener('scroll', checkScrollReveal);
+    window.addEventListener('load', checkScrollReveal);
+    
+    // Initial check
+    setTimeout(checkScrollReveal, 100);
 
     // Form handling for both forms
     function setupForm(formId, emailId, hpId, submitId, msgId) {
