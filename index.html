@@ -191,6 +191,8 @@
 
 
     // Multi-step form handling
+    console.log('JavaScript loaded, setting up form handlers');
+    
     let formData = {
       name: '',
       email: '',
@@ -200,9 +202,31 @@
     const successMessage = document.getElementById('successMessage');
     const resetBtn = document.getElementById('resetForm');
     const formContainer = document.getElementById('formContainer');
+    
+    console.log('Form elements found:', {
+      successMessage: !!successMessage,
+      resetBtn: !!resetBtn,
+      formContainer: !!formContainer,
+      nameForm: !!document.getElementById('nameForm'),
+      emailForm: !!document.getElementById('emailForm')
+    });
 
     // Step 1: Name form
-    document.getElementById('nameForm').addEventListener('submit', (e) => {
+    const nameForm = document.getElementById('nameForm');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    console.log('Setting up name form handler');
+    console.log('Name form element:', nameForm);
+    console.log('Next button element:', nextBtn);
+    
+    // Add click handler to button as backup
+    nextBtn.addEventListener('click', (e) => {
+      console.log('Next button clicked');
+      e.preventDefault();
+      nameForm.dispatchEvent(new Event('submit'));
+    });
+    
+    nameForm.addEventListener('submit', (e) => {
       e.preventDefault();
       console.log('Name form submitted');
       const name = document.getElementById('name').value.trim();
